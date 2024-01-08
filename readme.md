@@ -15,6 +15,12 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Installing
 
+- Create a virtual python environment (optional)
+
+```console
+python -m venv myenv 
+```
+
 1. Clone the repository:
 
 ```console
