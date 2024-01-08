@@ -5,13 +5,12 @@ from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
+from dotenv import load_dotenv
 
-username = os.environ.get("USERNAME")
-password = os.environ.get("PASSWORD")
-dbname = os.environ.get("DBNAME")
-host = os.environ.get("HOST")
+# Load environment variables from .env file
+load_dotenv()
 
-SQLALCHEMY_DATABASE_URL = f"postgresql://{username}:{password}@{host}/{dbname}"
+SQLALCHEMY_DATABASE_URL = os.environ.get('POSTGRES_URL')
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
