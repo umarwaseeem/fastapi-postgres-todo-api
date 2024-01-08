@@ -17,19 +17,19 @@ These instructions will get you a copy of the project up and running on your loc
 
 1. Clone the repository:
 
-```sh
-git clone <repository_url>
+```console
+git clone https://github.com/Umar-Waseem/fastapi-postgres-todo-api
 ```
 
 2. Install Python dependencies:
 
-```sh
+```console
 pip install -r requirements.txt
 ```
 
 3. Install Node.js dependencies:
 
-```sh
+```console
 npm install
 ```
 
@@ -44,19 +44,19 @@ HOST=host
 
 5. Run the application:
 
-```sh
+```console
 uvicorn app.main:app --reload
 ```
 
 6. Open the application in your browser:
 
-```sh
+```console
 streamlit run app/streamlit_app.py
 ```
 
 7. Running Tests
 
-```sh
+```console
 pytest test_api.py
 ```
 
