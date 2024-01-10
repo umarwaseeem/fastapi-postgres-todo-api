@@ -18,7 +18,7 @@ These instructions will get you a copy of the project up and running on your loc
 - Create a virtual python environment (optional)
 
 ```console
-python -m venv myenv 
+python -m venv myenv
 ```
 
 1. Clone the repository:
@@ -42,10 +42,7 @@ npm install
 4. Create a `.env` file in the root directory of the project and add the following environment variables:
 
 ```env
-USERNAME=username
-PASSWORD=password
-DB_NAME=dbname
-HOST=host
+POSTGRES_URL=
 ```
 
 5. Run the application:
