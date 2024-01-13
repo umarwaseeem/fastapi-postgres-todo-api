@@ -16,19 +16,28 @@ SQLALCHEMY_DATABASE_URL = os.environ.get('POSTGRES_URL')
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+##### DEPENDENCIES #####
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
 Base = declarative_base()
 
-class Todo(Base):
+class TodoModelDB(Base):
     __tablename__ = "todos"
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
     description = Column(String, index=True)
+    user_id = Column(String, index=True)
 
 class UserModelDB(Base):
     __tablename__ = "users"
 
-    user_id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(String, primary_key=True, autoincrement=True)
     username = Column(String, index=True)
     password_hash = Column(String, index=True)
     email = Column(String, index=True)

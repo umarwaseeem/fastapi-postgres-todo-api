@@ -1,10 +1,10 @@
 from pydantic import BaseModel
 
-class TodoCreate(BaseModel):
+class TodoModelPydantic(BaseModel):
     title: str
     description: str
 
-class UserModel(BaseModel):
+class UserModelPydantic(BaseModel):
     username: str
     password: str
     email: str
@@ -14,5 +14,8 @@ class FormLoginSchema(BaseModel):
     password: str
 
 class SignupResponseModel(BaseModel):
+    user_id: str
+
+class LoginResponseModel(BaseModel):
     access_token : str
-    refresh_token: str
+    token_type: str = "bearer"
