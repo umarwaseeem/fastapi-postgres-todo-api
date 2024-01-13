@@ -1,9 +1,9 @@
 import traceback
 from fastapi import FastAPI, HTTPException, Depends, status
 from sqlalchemy.orm import Session
-from database import SessionLocal, engine, Todo , UserModelDB
-from pydantic_models import TodoCreate , UserModel, FormLoginSchema, SignupResponseModel
-from utils import (
+from services.database import SessionLocal, Todo , UserModelDB
+from models.pydantic_models import TodoCreate , UserModel, FormLoginSchema, SignupResponseModel
+from utils.jwt import (
     get_hashed_password,
     verify_password,
     create_access_token,
@@ -31,43 +31,33 @@ def root():
 
 @app.post("/signup/", summary="Create new user", response_model=SignupResponseModel)
 async def signup_user(data: UserModel, db: Session = Depends(get_db)):
-    try:
-        # Check if user already exists
-        existing_user = db.query(UserModelDB).filter(UserModelDB.email == data.email).first()
+    # Check if user already exists
+    existing_user = db.query(UserModelDB).filter(UserModelDB.email == data.email).first()
 
-        # If user with a particular email already exists, raise an exception
-        if existing_user:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="User with this email already exists",
-            )
-
-        print("1111")
-        # Create a new user
-        new_user = UserModelDB(
-            username=data.username,
-            email=data.email,
-            password_hash=get_hashed_password(data.password),
-        )
-
-        print("2222")
-
-        # Save the new user to the database
-        db.add(new_user)
-        db.commit()
-        db.refresh(new_user)  # Refresh to get the updated user from the database
-
-        return {
-            "access_token": create_access_token(new_user.email),  # Accessing the 'email' attribute
-            "refresh_token": create_refresh_token(new_user.email),  # Accessing the 'email' attribute
-        }
-    except Exception as e:
-        print(e)
-        traceback.print_exc()
+    # If user with a particular email already exists, raise an exception
+    if existing_user:
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=e,
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User with this email already exists",
         )
+
+    # Create a new user
+    new_user = UserModelDB(
+        username=data.username,
+        email=data.email,
+        password_hash=get_hashed_password(data.password),
+    )
+
+    # Save the new user to the database
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)  # Refresh to get the updated user from the database
+
+    return {
+        "access_token": create_access_token(new_user.email), 
+        "refresh_token": create_refresh_token(new_user.email), 
+    }
+
 
 @app.post('/login/', summary="Login and create access and refresh tokens for user")
 async def login(form_data: FormLoginSchema, db: Session = Depends(get_db)):
@@ -78,7 +68,7 @@ async def login(form_data: FormLoginSchema, db: Session = Depends(get_db)):
             detail="Incorrect email or password"
         )
     
-    hashed_pass = user.password_hash  # Accessing the 'password' attribute using dot notation
+    hashed_pass = user.password_hash 
     if not verify_password(form_data.password, hashed_pass):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
