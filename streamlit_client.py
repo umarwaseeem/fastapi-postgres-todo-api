@@ -22,6 +22,15 @@ def delete_todo():
         if response.status_code == 200:
             st.success("Todo deleted successfully")
 
+def display_todos():
+    if st.button("Display Todos"):
+        response = requests.get(f"{BASE_URL}/todos/")
+        if response.status_code == 200:
+            todos = response.json()
+            for todo in todos:
+                st.write(f"Title: {todo['title']}, Description{todo['description']}")
+
 if __name__ == "__main__":
     create_todo()
     delete_todo()
+    display_todos()
