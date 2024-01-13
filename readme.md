@@ -43,6 +43,8 @@ npm install
 
 ```env
 POSTGRES_URL=
+JWT_SECRET_KEY=
+JWT_ALGORITHM=
 ```
 
 5. Run the application:
