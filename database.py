@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
+
 SQLALCHEMY_DATABASE_URL = os.environ.get('POSTGRES_URL')
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
@@ -23,3 +24,12 @@ class Todo(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
     description = Column(String, index=True)
+
+class UserModelDB(Base):
+    __tablename__ = "users"
+
+    user_id = Column(Integer, primary_key=True, autoincrement=True)
+    username = Column(String, index=True)
+    password_hash = Column(String, index=True)
+    email = Column(String, index=True)
+    created_at = Column(String, index=True)

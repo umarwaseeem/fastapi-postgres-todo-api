@@ -1,11 +1,18 @@
-from fastapi import FastAPI, HTTPException, Depends
+import traceback
+from fastapi import FastAPI, HTTPException, Depends, status
 from sqlalchemy.orm import Session
-from database import SessionLocal, engine, Todo
-from pydantic_models import TodoCreate  # Import the new Pydantic model
+from database import SessionLocal, engine, Todo , UserModelDB
+from pydantic_models import TodoCreate , UserModel, FormLoginSchema, SignupResponseModel
+from utils import (
+    get_hashed_password,
+    verify_password,
+    create_access_token,
+    create_refresh_token,
+)
 
 app = FastAPI()
 
-# Dependency
+##### DEPENDENCIES #####
 def get_db():
     db = SessionLocal()
     try:
@@ -13,12 +20,79 @@ def get_db():
     finally:
         db.close()
 
-@app.get("/")
+##### ROOT PAGE #####
+
+@app.get("/", summary="Root page")
 def root():
     return {"message": "TODO API"}
 
-# get all todos
-@app.get("/todos/")
+
+##### AUTHENTICATION #####
+
+@app.post("/signup/", summary="Create new user", response_model=SignupResponseModel)
+async def signup_user(data: UserModel, db: Session = Depends(get_db)):
+    try:
+        # Check if user already exists
+        existing_user = db.query(UserModelDB).filter(UserModelDB.email == data.email).first()
+
+        # If user with a particular email already exists, raise an exception
+        if existing_user:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="User with this email already exists",
+            )
+
+        print("1111")
+        # Create a new user
+        new_user = UserModelDB(
+            username=data.username,
+            email=data.email,
+            password_hash=get_hashed_password(data.password),
+        )
+
+        print("2222")
+
+        # Save the new user to the database
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)  # Refresh to get the updated user from the database
+
+        return {
+            "access_token": create_access_token(new_user.email),  # Accessing the 'email' attribute
+            "refresh_token": create_refresh_token(new_user.email),  # Accessing the 'email' attribute
+        }
+    except Exception as e:
+        print(e)
+        traceback.print_exc()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=e,
+        )
+
+@app.post('/login/', summary="Login and create access and refresh tokens for user")
+async def login(form_data: FormLoginSchema, db: Session = Depends(get_db)):
+    user = db.query(UserModelDB).filter(UserModelDB.email == form_data.email).first()
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Incorrect email or password"
+        )
+    
+    hashed_pass = user.password_hash  # Accessing the 'password' attribute using dot notation
+    if not verify_password(form_data.password, hashed_pass):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Incorrect email or password"
+        )
+    
+    return {
+        "message": "Logged in successfully",
+    }
+
+
+##### USER TODOS HANDLING #####
+
+@app.get("/todos/", summary="Get all todos")
 def get_todos(db: Session = Depends(get_db)):
     return db.query(Todo).all()
 
