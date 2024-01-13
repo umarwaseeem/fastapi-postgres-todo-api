@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
-from services.database import  TodoModelDB , get_db
-from models.pydantic_models import TodoModelPydantic 
-from utils.jwt_util import AuthHandler
+from services._database import  TodoModelDB , get_db
+from models._pydantic_models import TodoModelPydantic 
+from utils._jwt_util import AuthHandler
 
 
 auth_handler = AuthHandler()

@@ -1,8 +1,8 @@
 from fastapi import  HTTPException, Depends, status, APIRouter
 from sqlalchemy.orm import Session
-from services.database import  UserModelDB, get_db
-from models.pydantic_models import UserModelPydantic, FormLoginSchema, SignupResponseModel,LoginResponseModel
-from utils.jwt_util import AuthHandler
+from services._database import  UserModelDB, get_db
+from models._pydantic_models import UserModelPydantic, FormLoginSchema, SignupResponseModel,LoginResponseModel
+from utils._jwt_util import AuthHandler
 
 auth_handler = AuthHandler()
 

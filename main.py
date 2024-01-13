@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from utils.jwt_util import AuthHandler
-from routes import auth, todo
+from utils._jwt_util import AuthHandler
+from routes import _auth, _todo
 
 auth_handler = AuthHandler()
 app = FastAPI(
@@ -12,8 +12,8 @@ app = FastAPI(
     """,
 )
 
-app.include_router(auth.router)
-app.include_router(todo.router)
+app.include_router(_auth.router)
+app.include_router(_todo.router)
 
 
 
