@@ -5,7 +5,7 @@ from routes import auth, todo
 auth_handler = AuthHandler()
 app = FastAPI(
     docs_url="/",
-    title="Todo API With Postgres, SQLAlchemy and FastAPI",
+    title="Todo API With Postgres, SQLAlchemy, FastAPI and JWT Authentication",
     description="""
     This is a simple todo API with CRUD operations to demonstrate the use of FastAPI with SQLAlchemy and Postgres.
     \nCan easily be integrated with a front end application.
