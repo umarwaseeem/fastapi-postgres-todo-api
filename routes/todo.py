@@ -9,12 +9,12 @@ auth_handler = AuthHandler()
 
 router = APIRouter(tags=['Todo'])
 
-@router.get("/todos/", summary="Get all todos")
+@router.get("/todos/", summary="Get all todos for authenticated user")
 def get_todos(db: Session = Depends(get_db),user_id: str = Depends(auth_handler.get_user_id)):
     db_todos = db.query(TodoModelDB).filter(TodoModelDB.user_id == user_id).all()
     return db_todos
 
-@router.post("/todos/", response_model=TodoModelPydantic)
+@router.post("/todos/", response_model=TodoModelPydantic, summary="Create a new todo")
 def create_todo(todo: TodoModelPydantic, db: Session = Depends(get_db),user_id: str = Depends(auth_handler.get_user_id)):
     db_todo = TodoModelDB(
         title=todo.title,
@@ -26,7 +26,7 @@ def create_todo(todo: TodoModelPydantic, db: Session = Depends(get_db),user_id: 
     db.refresh(db_todo)
     return db_todo
 
-@router.put("/todos/{todo_id}", response_model=TodoModelPydantic)
+@router.put("/todos/{todo_id}", response_model=TodoModelPydantic, summary="Update a todo")
 def update_todo(todo_id: int, updated_todo: TodoModelPydantic, db: Session = Depends(get_db),user_id: str = Depends(auth_handler.get_user_id)):
     db_todo = db.query(TodoModelDB).filter(TodoModelDB.id == todo_id, TodoModelDB.user_id == user_id).first()
     if db_todo is None:
@@ -36,7 +36,7 @@ def update_todo(todo_id: int, updated_todo: TodoModelPydantic, db: Session = Dep
     db.commit()
     return TodoModelPydantic(**db_todo.dict())
 
-@router.delete("/todos/{todo_id}")
+@router.delete("/todos/{todo_id}", summary="Delete a todo")
 def delete_todo(todo_id: int, db: Session = Depends(get_db), user_id: str = Depends(auth_handler.get_user_id)):
     db_todo = db.query(TodoModelDB).filter(TodoModelDB.id == todo_id, TodoModelDB.user_id == user_id).first()
     if db_todo is None:

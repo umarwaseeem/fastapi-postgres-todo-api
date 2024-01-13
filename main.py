@@ -1,21 +1,19 @@
-# 3rd party imports
-from fastapi import FastAPI, HTTPException, Depends
-from sqlalchemy.orm import Session
-# local imports
-from services.database import  TodoModelDB , get_db
-from models.pydantic_models import TodoModelPydantic 
+from fastapi import FastAPI
 from utils.jwt_util import AuthHandler
-# router imports
 from routes import auth, todo
 
-
 auth_handler = AuthHandler()
-app = FastAPI()
+app = FastAPI(
+    docs_url="/",
+    title="Todo API With Postgres, SQLAlchemy and FastAPI",
+    description="""
+    This is a simple todo API with CRUD operations to demonstrate the use of FastAPI with SQLAlchemy and Postgres.
+    \nCan easily be integrated with a front end application.
+    """,
+)
 
 app.include_router(auth.router)
 app.include_router(todo.router)
 
-@app.get("/", summary="Root page")
-def root():
-    return {"message": "TODO API"}
+
 

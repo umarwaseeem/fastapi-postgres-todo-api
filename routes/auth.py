@@ -38,7 +38,7 @@ async def signup_user(data: UserModelPydantic, db: Session = Depends(get_db)):
     )
 
 
-@router.post('/login/', summary="Login and create access and refresh tokens for user", response_model=LoginResponseModel)
+@router.post('/login/', summary="Login and create token for user", response_model=LoginResponseModel)
 async def login(form_data: FormLoginSchema, db: Session = Depends(get_db)):
     
     # Check if user exists
