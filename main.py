@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from utils._jwt_util import AuthHandler
 from routes import _auth, _todo
+from fastapi.middleware.cors import CORSMiddleware
 
 auth_handler = AuthHandler()
 app = FastAPI(
@@ -15,5 +16,18 @@ app = FastAPI(
 app.include_router(_auth.router)
 app.include_router(_todo.router)
 
+origins = [
+    "http://localhost",
+    "http://localhost:3000",
+    "https://todo-manage-app.vercel.app"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
