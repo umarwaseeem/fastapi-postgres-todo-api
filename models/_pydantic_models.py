@@ -4,6 +4,10 @@ class TodoModelPydantic(BaseModel):
     title: str
     description: str
 
+class TodoResponseModelPydantic(TodoModelPydantic):
+    id: int
+
+
 class UserModelPydantic(BaseModel):
     username: str
     password: str
