@@ -37,7 +37,7 @@ class TodoModelDB(Base):
 class UserModelDB(Base):
     __tablename__ = "users"
 
-    user_id = Column(String, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, primary_key=True, autoincrement=True)
     username = Column(String, index=True)
     password_hash = Column(String, index=True)
     email = Column(String, index=True)

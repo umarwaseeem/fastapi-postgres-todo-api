@@ -17,9 +17,11 @@ class FormLoginSchema(BaseModel):
     email   : str
     password: str
 
-class SignupResponseModel(BaseModel):
-    user_id: str
+
 
 class LoginResponseModel(BaseModel):
     access_token : str
     token_type: str = "bearer"
+
+class SignupResponseModel(LoginResponseModel):
+    user_id: int

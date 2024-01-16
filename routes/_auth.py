@@ -35,6 +35,7 @@ async def signup_user(data: UserModelPydantic, db: Session = Depends(get_db)):
 
     return SignupResponseModel(
         user_id=new_user.user_id,
+        access_token=auth_handler.encode_token(str(new_user.user_id)),
     )
 
 
@@ -61,3 +62,4 @@ async def login(form_data: FormLoginSchema, db: Session = Depends(get_db)):
     return LoginResponseModel(
         access_token=auth_handler.encode_token(str(user.user_id)),
     )
+
