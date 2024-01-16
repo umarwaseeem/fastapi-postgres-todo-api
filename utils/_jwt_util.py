@@ -27,7 +27,7 @@ class AuthHandler():
 
     def encode_token(self, user_id: str):
         # encoded_id = user_id.copy()
-        expiration_time = datetime.utcnow() + timedelta(minutes=3600)
+        expiration_time = datetime.utcnow() + timedelta(minutes=1)
         payload = {
             'exp': expiration_time,
             'iat': datetime.utcnow(),
@@ -57,16 +57,17 @@ class AuthHandler():
         try:
             payload = jwt.decode(token=token, key=self.secret, algorithms=[self.algorithm])
             id: str = payload.get('sub')
-            print(id)
             return id
         except ExpiredSignatureError as e:
             print(e)
-            traceback.print_exc()
             raise HTTPException(status_code=401, detail="Signature has expired")
         except Exception as e:
             print(e)
-            traceback.print_exc()
             raise HTTPException(status_code=401, detail="Invalid token")
 
     def get_user_id(self, auth: HTTPAuthorizationCredentials = Security(security)) -> str:
+        if auth.scheme.lower() != 'bearer':
+            raise HTTPException(status_code=401, detail="Invalid authentication scheme")
+        if not auth.credentials:
+            raise HTTPException(status_code=401, detail="Invalid user token")
         return self.decode_token(auth.credentials)
