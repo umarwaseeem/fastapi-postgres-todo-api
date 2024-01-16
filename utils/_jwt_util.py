@@ -27,7 +27,7 @@ class AuthHandler():
 
     def encode_token(self, user_id: str):
         # encoded_id = user_id.copy()
-        expiration_time = datetime.utcnow() + timedelta(minutes=1)
+        expiration_time = datetime.utcnow() + timedelta(days=3)
         payload = {
             'exp': expiration_time,
             'iat': datetime.utcnow(),
@@ -71,3 +71,4 @@ class AuthHandler():
         if not auth.credentials:
             raise HTTPException(status_code=401, detail="Invalid user token")
         return self.decode_token(auth.credentials)
+
